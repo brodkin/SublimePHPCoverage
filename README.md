@@ -26,30 +26,46 @@ settings object, prepended with `phpcoverage_`. For instance, to override
 `path_report` you would set `phpcoverage_path_report` in your `.sublime-project`
 file.
 
-## Setting up PHPUnit
+## Generating Code Coverage Reports
 
-Make sure PHPUnit is configured to output code coverage data to
-`build/log/clover.xml` (relative to your Sublime Text 2 project
-root), in Clover format. You can do this with PHPUnit's
-[command-line arguments][1]:
+Ensure that your unit testing framework has been configured to output Clover-formatted code coverage data to the directory specified in your configuation file. The default path is `build/log/clover.xml`, but you may override this value via the settings file.
+
+**NOTE:** The coverage file path must be relative to your project's root directory.
+
+### PHPUnit
+
+Reports can be generated on the fly using PHPUnit's [command-line arguments][1]:
 
 ```bash
 ~/myProject$ phpunit --coverage-clover build/log/clover.xml
 ```
-
-...or, preferably, in PHPUnit's [XML configuration file][2]:
+Most, however, will prefer to configure code coverage in PHPUnit's [XML configuration file][2]:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit>
-	<!-- ... -->
-	<logging>
-		<log type="coverage-clover" target="build/log/clover.xml" />
-	</logging>
-	<!-- ... -->
+    <!-- ... -->
+    <logging>
+        <log type="coverage-clover" target="build/log/clover.xml" />
+    </logging>
+    <!-- ... -->
 </phpunit>
 ```
+### Codeception
 
+Reports can be generated on the fly using Codeception's CLI:
+
+```bash
+~/myProject$ codecept run --coverage --xml
+```
+Assuming you want to update coverage on every Codeception run, you'll probably just want to modify your `codeception.yml` file to include the following:
+
+```yaml
+coverage:
+    enabled: true
+```
+
+**NOTE:** Codeception does not allow users to set the destination path of Clover logs at the time of writing. As such, Codeception users must change the path to the Clover report in settings to `tests/_log/coverage.xml`.
 
 ## Usage
 
